@@ -24,6 +24,7 @@ import io
 client_id = 'sh-2501e138-2a1d-4ece-8024-574d63122ee6'
 client_secret = 'rSCyHMNPUQ2d8I1dVe1w8LvsudH6Kdsl'
 
+
 # Create a session
 client = BackendApplicationClient(client_id=client_id)
 oauth = OAuth2Session(client=client)
@@ -36,10 +37,14 @@ token = oauth.fetch_token(token_url='https://identity.dataspace.copernicus.eu/au
 resp = oauth.get("https://sh.dataspace.copernicus.eu/configuration/v1/wms/instances")
 print(resp.content)
 
+height = 0.1
+width = 0.1
+box_min_heighth = -61.3
+box_min_width = -1.1
+
+bounding_box
 bounding_boxes = [
-    [-65.636787,-4.125966,-65.596275,-4.087079],
-    [13.8221, 45.8508, 14.5596, 46.2919],
-    [13.7, 45.8, 14.5, 46.2],  # Example of a different bbox
+    [-61.3,-1.1,-61.2,-1.04],
     # Add as many bounding boxes as needed to cover your area of interest
 ]
 
@@ -51,11 +56,11 @@ request = {
         },
         "data": [
             {
-                "type": "sentinel-2-l2c",
+                "type": "sentinel-2-l1c",
                 "dataFilter": {
                     "timeRange": {
-                        "from": "2024-10-01T00:00:00Z",
-                        "to": "2024-10-31T00:00:00Z",
+                        "from": "2023-09-01T00:00:00Z",
+                        "to": "2023-10-31T00:00:00Z",
                     }
                 },
             }
@@ -74,8 +79,9 @@ for i, bbox in enumerate(bounding_boxes):
     request["input"]["bounds"]["bbox"] = bbox
     url = "https://sh.dataspace.copernicus.eu/api/v1/process"
     response = oauth.post(url, json=request)
+    print(f"Response: {response}")
     data = response.content 
-
+    # print(data)
     # Create an in-memory binary stream to read byte data as an image
     image_stream = io.BytesIO(data)
 
