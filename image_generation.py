@@ -36,24 +36,26 @@ token = oauth.fetch_token(token_url='https://identity.dataspace.copernicus.eu/au
 resp = oauth.get("https://sh.dataspace.copernicus.eu/configuration/v1/wms/instances")
 print(resp.content)
 
+bounding_boxes = [
+    [-65.636787,-4.125966,-65.596275,-4.087079],
+    [13.8221, 45.8508, 14.5596, 46.2919],
+    [13.7, 45.8, 14.5, 46.2],  # Example of a different bbox
+    # Add as many bounding boxes as needed to cover your area of interest
+]
+
 request = {
     "input": {
         "bounds": {
             "properties": {"crs": "http://www.opengis.net/def/crs/OGC/1.3/CRS84"},
-            "bbox": [
-                13.822174072265625,
-                45.85080395917834,
-                14.55963134765625,
-                46.29191774991382,
-            ],
+            "bbox": "",
         },
         "data": [
             {
-                "type": "sentinel-2-l1c",
+                "type": "sentinel-2-l2c",
                 "dataFilter": {
                     "timeRange": {
-                        "from": "2022-10-01T00:00:00Z",
-                        "to": "2022-10-31T00:00:00Z",
+                        "from": "2024-10-01T00:00:00Z",
+                        "to": "2024-10-31T00:00:00Z",
                     }
                 },
             }
@@ -66,16 +68,20 @@ request = {
     "evalscript": evalscript,
 }
 
-url = "https://sh.dataspace.copernicus.eu/api/v1/process"
-response = oauth.post(url, json=request)
-data = response.content 
 
-# Create an in-memory binary stream to read byte data as an image
-image_stream = io.BytesIO(data)
 
-# Open the byte data as an image
-image = Image.open(image_stream)
+for i, bbox in enumerate(bounding_boxes):
+    request["input"]["bounds"]["bbox"] = bbox
+    url = "https://sh.dataspace.copernicus.eu/api/v1/process"
+    response = oauth.post(url, json=request)
+    data = response.content 
 
-# Show or save the image
-image.show()  
+    # Create an in-memory binary stream to read byte data as an image
+    image_stream = io.BytesIO(data)
+
+    # Open the byte data as an image
+    image = Image.open(image_stream)
+
+    # Show or save the image
+    image.save(f"images/training/negative/negative_{i}.png")  
 
