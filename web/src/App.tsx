@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import ReactCompareImage from 'react-compare-image';
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -14,7 +13,6 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs";
-import { CalendarDateRangePicker } from "@/components/date-range-picker";
 import { MainNav } from "@/components/main-nav";
 import { ForestationChart } from "@/components/forestation-chart";
 import { RecentAlerts } from "@/components/recent-alerts";
@@ -25,27 +23,6 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import { AreaCoverage, Detection, SatelliteImageData, Statistics, TotalCoverage } from './types';
 import { formatDistanceToNow, subMonths } from 'date-fns';
 import { useEffect, useState } from 'react';
-
-// const AREA_IMAGES: { [key: string]: ({ [key: string]: SatelliteImageData; }); } = {
-//   'area-1': {
-//     '2020-07-01': {
-//       satellite: '2020-07-01-S2-grid.jpg',
-//       segmented: '2020-07-01-S2-segmented.jpg',
-//       forestationRate: 0.95
-//     },
-//     '2022-04-01': {
-//       satellite: '2022-04-01-S2-grid.jpg',
-//       segmented: '2022-04-01-S2-segmented.jpg',
-//       forestationRate: 0.8,
-//     },
-//     '2022-10-01': {
-//       satellite: '2022-10-01-S2-grid.jpg',
-//       segmented: '2022-10-01-S2-segmented.jpg',
-//       forestationRate: 0.75,
-//     }
-//   }
-// };
-
 
 export default function DashboardPage() {
   const [selectedArea, setSelectedArea] = useState('area-1');
@@ -102,8 +79,6 @@ export default function DashboardPage() {
             <div className="flex items-center justify-between space-y-2">
               <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
               <div className="flex items-center space-x-2">
-                <CalendarDateRangePicker />
-                <Button disabled>Update</Button>
               </div>
             </div>
             <Tabs defaultValue="overview" className="space-y-4">
