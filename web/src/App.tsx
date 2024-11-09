@@ -93,14 +93,14 @@ export default function DashboardPage() {
                   <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                       <CardTitle className="text-sm font-medium">
-                        Total Forest Area
+                        Forest Area
                       </CardTitle>
                       <TreePine />
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold">{totalCoverage?.total_coverage} ha</div>
+                      <div className="text-2xl font-bold">{(Number(totalCoverage?.total_coverage) || 0) * Number(areaCoverage.at(-1)?.coverage?.replace('%', '')) / 100} ha</div>
                       <p className="text-xs text-muted-foreground">
-                        {Number(areaCoverage.at(-1)?.coverage?.replace('%', '')).toFixed(2)}% of total area
+                        Coverage {Number(areaCoverage.at(-1)?.coverage?.replace('%', '')).toFixed(2)}% of total area
                       </p>
                     </CardContent>
                   </Card>
