@@ -3,7 +3,10 @@ from skimage import io, filters, morphology, segmentation
 from skimage.color import rgba2rgb, label2rgb
 import matplotlib.pyplot as plt
 import pandas as pd
+import numpy as np
 from PIL import Image
+from split_images import *
+import json
 
 def otsu_thresholding(image_name):
   # Load and blur the image to reduce noise
@@ -81,24 +84,95 @@ def calculate_chunk_deforestation(image):
 
   return deforestation_area_ha
 
+def calculate_chunk_area(image_path):
+    split_image(image_path)
+    directory_path = "split_images/"
+    image_name = os.path.splitext(os.path.basename(image_path))[0]
+    listdir = os.listdir(directory_path + image_name)
+    listdir.sort()
+    arr = []
+    for idx, filename in enumerate(listdir):
+      file_path = os.path.join(directory_path + image_name, filename)
+      if filename.lower().endswith(('.png', '.jpg', '.jpeg', '.bmp', '.gif', '.tiff')):
+          arr.append(get_pixel_ratio(file_path))
+
+    return np.array(arr)
+
+
 if __name__ == "__main__":
   inputs = os.listdir("../image_generation/satellite_images")
   images = []
   for filename in inputs:
       if filename.lower().endswith(('.png', '.jpg', '.jpeg', '.bmp', '.gif', '.tiff')):
           images.append(os.path.join("../image_generation/satellite_images", filename))
-  output_data_file = "../output/statistics.txt"
+  output_data_file = "../output/statistics.json"
+  output_json = "../output/detections.json"
+
+  df_0 = pd.read_pickle("../image_classification/deforestation_df_0.pkl")
+  df_1 = pd.read_pickle("../image_classification/deforestation_df_1.pkl")
+  df_2 = pd.read_pickle("../image_classification/deforestation_df_2.pkl")
+
+  df_list = [df_0, df_1, df_2]
+
+
+
+  #calculate are compared to previous area
   with open(output_data_file, 'w') as f:
-    f.write("Total area: " + str(14807) + "\n")
-    for image in images:
-      deforestation_area_ha = calculate_chunk_deforestation(image)
-      #images with no deforestation cause a lot of noise, ignore them in statistic
-      if deforestation_area_ha < 14807//2:
-        f.write(str(100 - (deforestation_area_ha/14807 * 100)) + "%" + "\n")
+    json_out = open(output_json, 'w')
+    forest_coverage = []
+    forest_coverage.append({"total_coverage" : str("14807")})
+    detection_data = []
+    for idx, image in enumerate(images):
+      if (df_list[idx]['label'] == 'not_deforestation').all():
+        #images withouth deforestation cause a lot of noise, handle them separately here
+        output_image = Image.new("RGB", (1086, 720), (0, 0, 0))
+        output_image.save("../output/segmented_" + os.path.basename(image))
+        data = {
+           "date" : df_list[idx]['timestamp'].iloc[0],
+           "coverage" : "100%"
+        }
+        forest_coverage.append(data)
+        if idx == 0:
+           df_list[idx]['prev_area'] = 0
+           df_list[idx]['area'] = calculate_chunk_area("../output/segmented_" + os.path.basename(image))
+        
       else:
-        f.write("100%\n")
-     
-    
+        #there's at least some deforestation detected, see if it is new
+        deforestation_area_ha = calculate_chunk_deforestation(image)
+        df_list[idx]['prev_area'] = df_list[idx-1]['area']
+        df_list[idx]['area'] = calculate_chunk_area("../output/segmented_" + os.path.basename(image))
+        data = {
+           "date" : df_list[idx]['timestamp'].iloc[0],
+           "coverage" : str(100 - (deforestation_area_ha/14807 * 100)) + "%"
+        }
+        forest_coverage.append(data)
+        for _, row in df_list[idx].iterrows():
+           if (row['label'] == 'deforestation' and row['prev_label'] == 'not_deforestation'):
+                print("Deforestation detected, label switch")
+                print(f"Coordinates: ({row['x_coord']}, {row['y_coord']})")
+                data = {
+                   "date" : row['timestamp'],
+                   "type" : "LS",
+                   "x_cord" : str(row['x_coord']),
+                   "y_cord" : str(row['y_coord']),
+                   "area_change" : ""
+                }
+                detection_data.append(data)
+           if (abs(row['area']-row['prev_area']) > 0.05):
+                print("Deforestation detected, increase in deforestation area")
+                print(f"Coordinates: ({row['x_coord']}, {row['y_coord']}) ")
+                data = {
+                   "date" : row['timestamp'],
+                   "type" : "DAI",
+                   "x_cord" : str(row['x_coord']),
+                   "y_cord" : str(row['y_coord']),
+                   "area_change" : str(abs(row['area']-row['prev_area']) * 100)
+                }
+                detection_data.append(data)
+              #do something
+    json.dump(forest_coverage, f)
+    json.dump(detection_data, json_out)
+  
     
 
 # super_pixel("segmentation_test_image.png")
