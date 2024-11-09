@@ -60,28 +60,42 @@ def get_pixel_ratio(image_path):
 #   plt.imshow(label2rgb(segments_slic, image, kind='avg'))
 #   plt.title("SLIC Superpixel Segmentation")
 #   # plt.show()
-  
-if __name__ == "__main__":
+
+def calculate_chunk_deforestation(image):
   total_image_area_ha = 14807
-  source_images_folder = "source_images/"
-  output_folder = "output_images/"
-  source_images = os.listdir(source_images_folder)
   
   deforestation_information_df = pd.DataFrame(columns=["image", "deforestation_area_ha"])
-  for image in source_images:
-    relative_image_path = source_images_folder + image
-    output_image = otsu_thresholding(source_images_folder + image)
-    
-    # save for debugging
-    io.imsave(output_folder + image, output_image)
-    
-    # get white/black ratio  
-    pixel_ratio = get_pixel_ratio(output_folder + image)
-    deforestation_area_ha = round(pixel_ratio * total_image_area_ha)
-    
-    data = {"image": image, "deforestation_area_ha": deforestation_area_ha}
-    deforestation_information_df.loc[len(deforestation_information_df.index)] = data 
-    print(deforestation_information_df)
+  output_folder = "output_images/"
+  output_image = otsu_thresholding(image)
+  io.imsave(output_folder + os.path.basename(image), output_image)
+  
+  # get white/black ratio  
+  pixel_ratio = get_pixel_ratio(output_folder + os.path.basename(image))
+  deforestation_area_ha = round(pixel_ratio * total_image_area_ha)
+
+  
+  data = {"image": image, "deforestation_area_ha": deforestation_area_ha}
+  deforestation_information_df.loc[len(deforestation_information_df.index)] = data 
+  print(deforestation_area_ha)
+
+  return deforestation_area_ha
+
+if __name__ == "__main__":
+  inputs = os.listdir("../image_generation/satellite_images")
+  images = []
+  for filename in inputs:
+      if filename.lower().endswith(('.png', '.jpg', '.jpeg', '.bmp', '.gif', '.tiff')):
+          images.append(os.path.join("../image_generation/satellite_images", filename))
+  output_data_file = "statistics.txt"
+  with open(output_data_file, 'w') as f:
+    for image in images:
+      deforestation_area_ha = calculate_chunk_deforestation(image)
+      #images with no deforestation cause a lot of noise, ignore them in statistic
+      if deforestation_area_ha < 14807//2:
+        f.write(str(deforestation_area_ha) + "\n")
+      else:
+        f.write("0\n")
+     
     
     
 
