@@ -4,6 +4,12 @@ import nbformat
 from nbconvert.preprocessors import ExecutePreprocessor
 
 if __name__ == "__main__":
+    #cleanup from previous runs
+    shutil.rmtree("output/")
+    shutil.rmtree("image_generation/split_images")
+    os.mkdir("output/")
+    os.mkdir("image_generation/split_images")
+
     shutil.copytree("satellite_images", "output", dirs_exist_ok=True)
     os.system("python3 draw_grid.py")
 
