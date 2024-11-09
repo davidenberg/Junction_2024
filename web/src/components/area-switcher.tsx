@@ -61,14 +61,19 @@ type Area = (typeof groups)[number]["areas"][number];
 
 type PopoverTriggerProps = React.ComponentPropsWithoutRef<typeof PopoverTrigger>;
 
-interface AreaSwitcherProps extends PopoverTriggerProps { className?: string; }
+interface AreaSwitcherProps extends PopoverTriggerProps { className?: string; onSelectedAreaChange: (key: string) => void; }
 
-export default function AreaSwitcher({ className }: AreaSwitcherProps) {
+export default function AreaSwitcher({ className, onSelectedAreaChange }: AreaSwitcherProps) {
   const [open, setOpen] = React.useState(false);
   const [showNewAreaDialog, setShowNewAreaDialog] = React.useState(false);
   const [selectedArea, setSelectedArea] = React.useState<Area>(
     groups[0].areas[0]
   );
+
+  const changeArea = (area: Area) => {
+    setSelectedArea(area);
+    onSelectedAreaChange(area.value);
+  };
 
   return (
     <Dialog open={showNewAreaDialog} onOpenChange={setShowNewAreaDialog}>
@@ -104,7 +109,7 @@ export default function AreaSwitcher({ className }: AreaSwitcherProps) {
                     <CommandItem
                       key={area.value}
                       onSelect={() => {
-                        setSelectedArea(area);
+                        changeArea(area);
                         setOpen(false);
                       }}
                       className="text-sm"

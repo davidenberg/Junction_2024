@@ -22,52 +22,48 @@ import { ThemeProvider } from './components/theme-provider';
 import { BadgeAlert, Satellite, Telescope, TreePine } from 'lucide-react';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from './components/ui/carousel';
 import { SatelliteImageData } from './types';
-import { formatDistanceToNow } from 'date-fns';
+import { formatDistanceToNow, subMonths } from 'date-fns';
+import { useState } from 'react';
 
 const AREA_IMAGES: { [key: string]: ({ [key: string]: SatelliteImageData; }); } = {
   'area-1': {
     '2020-07-01': {
-      satellite: '2020-07-01-S2.jpg',
+      satellite: '2020-07-01-S2-grid.jpg',
       segmented: '2020-07-01-S2-segmented.jpg',
       forestationRate: 0.95
     },
     '2022-04-01': {
-      satellite: '2022-04-01-S2.jpg',
+      satellite: '2022-04-01-S2-grid.jpg',
       segmented: '2022-04-01-S2-segmented.jpg',
       forestationRate: 0.8,
     },
     '2022-10-01': {
-      satellite: '2022-10-01-S2.jpg',
+      satellite: '2022-10-01-S2-grid.jpg',
       segmented: '2022-10-01-S2-segmented.jpg',
       forestationRate: 0.75,
     }
   }
 };
 
-const SELECTED_AREA = 'area-1';
-
-interface CarouselImageProps {
-  data: SatelliteImageData;
-}
-function CarouselImage({ data }: CarouselImageProps) {
-  const satelliteImageUrl = `${SELECTED_AREA}/${data.satellite}`;
-  const segmentedImageUrl = `${SELECTED_AREA}/${data.segmented}`;
-  return (
-    <ReactCompareImage leftImage={satelliteImageUrl} rightImage={segmentedImageUrl} sliderPositionPercentage={1} />
-  );
-}
 
 export default function DashboardPage() {
-  const activeAreaImages = AREA_IMAGES[SELECTED_AREA];
+  const [selectedArea, setSelectedArea] = useState('area-1');
+  const activeAreaImages = AREA_IMAGES[selectedArea];
   const firstEntryKey = Object.keys(activeAreaImages).sort((a, b) => new Date(a).getTime() - new Date(b).getTime())[0];
-  console.log(firstEntryKey);
+
+  const getCarouselImages = (data: SatelliteImageData) => {
+    const satelliteImageUrl = `${selectedArea}/${data.satellite}`;
+    const segmentedImageUrl = `${selectedArea}/${data.segmented}`;
+    return { leftImage: satelliteImageUrl, rightImage: segmentedImageUrl };
+  };
+
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <main>
         <div className="hidden flex-col md:flex">
           <div className="border-b">
             <div className="flex h-16 items-center px-4">
-              <AreaSwitcher />
+              <AreaSwitcher onSelectedAreaChange={(area) => setSelectedArea(area)} />
               <MainNav className="mx-6" />
               <div className="ml-auto flex items-center space-x-4">
               </div>
@@ -112,9 +108,11 @@ export default function DashboardPage() {
                       <Satellite />
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold">2350</div>
+                      <div className="text-2xl font-bold">{Object.keys(activeAreaImages).length}</div>
                       <p className="text-xs text-muted-foreground">
-                        +103 from last month
+                        +{
+                          Object.keys(activeAreaImages).filter((date) => new Date(date) < subMonths(new Date(), 1)).length
+                          - Object.keys(activeAreaImages).length} from last month
                       </p>
                     </CardContent>
                   </Card>
@@ -176,7 +174,7 @@ export default function DashboardPage() {
                             <Card>
                               <CardTitle className='text-center mt-8'>{key}</CardTitle>
                               <CardContent className="flex aspect-square items-center justify-center p-6 w-full h-full max-h-[70vh]">
-                                <CarouselImage data={activeAreaImages[key]} />
+                                <ReactCompareImage {...getCarouselImages(activeAreaImages[key])} sliderPositionPercentage={1} />
                               </CardContent>
                             </Card>
                           </div>
