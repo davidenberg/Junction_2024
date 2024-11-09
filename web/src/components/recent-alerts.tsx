@@ -18,7 +18,7 @@ function NewDeforestation({ date, x, y }: ForestationProps) {
       </AvatarFallback>
     </Avatar>
     <div className="ml-4 space-y-1">
-      <p className="text-sm font-medium leading-none">Reforestation</p>
+      <p className="text-sm font-medium leading-none">New Deforestation Area</p>
       <p className="text-sm text-muted-foreground">
         A new deforestation area has been detected at ({x}, {y}).
       </p>
@@ -42,7 +42,7 @@ function ExpandingDeforestation({ date, increase, x, y }: DeforestationProps) {
         </AvatarFallback>
       </Avatar>
       <div className="ml-4 space-y-1">
-        <p className="text-sm font-medium leading-none">Deforestation</p>
+        <p className="text-sm font-medium leading-none">Expanding Deforestation Area</p>
         <p className="text-sm text-muted-foreground">
           The deforestation area at ({x}, {y}) has increased by {increase} %pt.
         </p>
