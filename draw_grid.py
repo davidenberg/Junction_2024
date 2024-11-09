@@ -48,7 +48,7 @@ def draw_grid(image_path, rows, cols, output_path):
     image.save(output_path)
     print(f"Grid image saved as {output_path}")
 
-for filename in os.listdir("image_generation/satellite_images"):
+for filename in os.listdir("satellite_images"):
     if filename.lower().endswith(('.png', '.jpg', '.jpeg', '.bmp', '.gif', '.tiff')):
-        file_path = os.path.join("image_generation/satellite_images", filename)
+        file_path = os.path.join("satellite_images", filename)
         draw_grid(file_path, rows=4, cols=6, output_path=os.path.join("output", "grid" + filename))

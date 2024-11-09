@@ -100,11 +100,11 @@ def calculate_chunk_area(image_path):
 
 
 if __name__ == "__main__":
-  inputs = os.listdir("../image_generation/satellite_images")
+  inputs = os.listdir("../satellite_images")
   images = []
   for filename in inputs:
       if filename.lower().endswith(('.png', '.jpg', '.jpeg', '.bmp', '.gif', '.tiff')):
-          images.append(os.path.join("../image_generation/satellite_images", filename))
+          images.append(os.path.join("../satellite_images", filename))
   output_data_file = "../output/statistics.json"
   output_json = "../output/detections.json"
 
