@@ -121,6 +121,7 @@ if __name__ == "__main__":
     json_out = open(output_json, 'w')
     forest_coverage = []
     forest_coverage.append({"total_coverage" : str("14807")})
+    forest_coverage.append({"type":"Polygon","coordinates":[[[-63.078518,-6.607827],[-63.213615,-6.607827],[-63.213615,-6.518797],[-63.078518,-6.518797],[-63.078518,-6.607827]]]})
     detection_data = []
     for idx, image in enumerate(images):
       if (df_list[idx]['label'] == 'not_deforestation').all():
@@ -154,8 +155,7 @@ if __name__ == "__main__":
                    "date" : row['timestamp'],
                    "type" : "LS",
                    "x_cord" : str(row['x_coord']),
-                   "y_cord" : str(row['y_coord']),
-                   "area_change" : ""
+                   "y_cord" : str(row['y_coord'])
                 }
                 detection_data.append(data)
            if (abs(row['area']-row['prev_area']) > 0.05):
@@ -166,7 +166,7 @@ if __name__ == "__main__":
                    "type" : "DAI",
                    "x_cord" : str(row['x_coord']),
                    "y_cord" : str(row['y_coord']),
-                   "area_change" : str(abs(row['area']-row['prev_area']) * 100)
+                   "area_change" : abs(row['area']-row['prev_area']) * 100
                 }
                 detection_data.append(data)
               #do something
