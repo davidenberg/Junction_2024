@@ -36,4 +36,4 @@ def process_directory(directory_path):
             split_image(file_path)
 
 if __name__ == "__main__":
-    process_directory("satellite_images")
+    process_directory("../satellite_images")
