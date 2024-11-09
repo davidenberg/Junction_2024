@@ -42,11 +42,10 @@ width = 0.1
 box_min_heighth = -61.3
 box_min_width = -1.1
 
-bounding_box
-bounding_boxes = [
-    [-61.3,-1.1,-61.2,-1.04],
-    # Add as many bounding boxes as needed to cover your area of interest
-]
+# bounding_boxes = [
+#     [-61.3,-1.1,-61.2,-1.04],
+#     # Add as many bounding boxes as needed to cover your area of interest
+# ]
 
 request = {
     "input": {
@@ -73,15 +72,13 @@ request = {
     "evalscript": evalscript,
 }
 
-
-
-for i, bbox in enumerate(bounding_boxes):
+def get_image(i, bbox):
     request["input"]["bounds"]["bbox"] = bbox
     url = "https://sh.dataspace.copernicus.eu/api/v1/process"
     response = oauth.post(url, json=request)
-    print(f"Response: {response}")
     data = response.content 
-    # print(data)
+    print(data)
+
     # Create an in-memory binary stream to read byte data as an image
     image_stream = io.BytesIO(data)
 
@@ -89,5 +86,32 @@ for i, bbox in enumerate(bounding_boxes):
     image = Image.open(image_stream)
 
     # Show or save the image
-    image.save(f"images/training/negative/negative_{i}.png")  
+    image.save(f"images/training/negative/negative2_{i}.png")  
+
+def bbox_area():
+    START_LAT = -5.8
+    END_LAT = -6.5
+    START_LNG = -50.4
+    END_LNG = -49
+    JUMP_SIZE=0.01
+
+    lat = START_LAT
+    lng = START_LNG
+
+    i = 0
+    while lat > END_LAT:
+        while lng < END_LNG:
+            get_image(i, [lng, lat, lng + JUMP_SIZE, lat + JUMP_SIZE])
+            i += 1
+            lng += JUMP_SIZE
+        lat -= JUMP_SIZE
+
+
+bounding_boxes = [
+    [-63,-6.6,-62.5,-6],
+    # Add as many bounding boxes as needed to cover your area of interest
+]
+
+for i, bbox in enumerate(bounding_boxes):
+    get_image(i, bbox)
 
