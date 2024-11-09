@@ -11,7 +11,7 @@ pip install -r requirements.txt
 
 ## Demo
 
-A demo of our dashboard can be found at ... the images used in creating the dashboard can be found in this repository in *satellite_images* and *satellite_images_area2*. The files in the *output* directory are created from the images in *satellite_images* 
+A demo of our dashboard can be found at [link](https://blinkbonanza.06ebee69-0772-4b23-a839-3a48c3de5bf9.fi-hel2.upcloudobjects.com/index.html). The images used in creating the dashboard can be found in this repository in *satellite_images* and *satellite_images_area2*. The files in the *output* directory are created from the images in *satellite_images* 
 
 ## Usage
 
@@ -35,7 +35,7 @@ it will clean up any previous runs, and analyse all the pictures supplied in the
         "y_cord": "0"
     }
     ```
-    2. De-forested Are Increase (DAI), the area of deforested land within the chunck has increased at least 5% since the last data point
+    2. De-forested Area Increase (DAI), the area of deforested land within the chunck has increased at least 5%pt since the last data point
     ```json
     {
         "date": "2022-10-01-00_00_2022-10-01-23_59",
@@ -51,7 +51,7 @@ it will clean up any previous runs, and analyse all the pictures supplied in the
 Team Cyber Surfers:\
 David Enberg (david.enberg@aalto.fi)\
 Markus Andersson (markus.o.andersson@aalto.fi)\
-Johannes Peltola (johannes.e.peltola@aalto.fi)\
+Johannes Peltola (johannes.e.peltola@aalto.fi)
 
 ## License
 
