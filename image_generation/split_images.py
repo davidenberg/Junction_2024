@@ -9,11 +9,6 @@ def split_image(image_path):
     part_width = img_width // cols
     part_height = img_height // rows
 
-    print(img_width)
-    print(part_width)
-    print(img_height)
-    print(part_height)
-
     image_name = os.path.splitext(os.path.basename(image_path))[0]
     output_dir = os.path.join('split_images/', image_name)
     os.makedirs(output_dir, exist_ok=True)
