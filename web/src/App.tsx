@@ -21,9 +21,10 @@ import AreaSwitcher from "@/components/area-switcher";
 import { ThemeProvider } from './components/theme-provider';
 import { BadgeAlert, Satellite, Telescope, TreePine } from 'lucide-react';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from './components/ui/carousel';
-import { SatelliteImageData } from './types';
+import { Detection, SatelliteImageData } from './types';
 import { formatDistanceToNow, subMonths } from 'date-fns';
 import { useState } from 'react';
+import _detections from './assets/detections.json';
 
 const AREA_IMAGES: { [key: string]: ({ [key: string]: SatelliteImageData; }); } = {
   'area-1': {
@@ -50,6 +51,7 @@ export default function DashboardPage() {
   const [selectedArea, setSelectedArea] = useState('area-1');
   const activeAreaImages = AREA_IMAGES[selectedArea];
   const firstEntryKey = Object.keys(activeAreaImages).sort((a, b) => new Date(a).getTime() - new Date(b).getTime())[0];
+  const detections: Detection[] = _detections as unknown as Detection[];
 
   const getCarouselImages = (data: SatelliteImageData) => {
     const satelliteImageUrl = `${selectedArea}/${data.satellite}`;
@@ -111,8 +113,8 @@ export default function DashboardPage() {
                       <div className="text-2xl font-bold">{Object.keys(activeAreaImages).length}</div>
                       <p className="text-xs text-muted-foreground">
                         +{
-                          Object.keys(activeAreaImages).filter((date) => new Date(date) < subMonths(new Date(), 1)).length
-                          - Object.keys(activeAreaImages).length} from last month
+                          Object.keys(activeAreaImages).filter((date) => new Date(date) > subMonths(new Date(), 1)).length
+                        } from last month
                       </p>
                     </CardContent>
                   </Card>
@@ -135,9 +137,9 @@ export default function DashboardPage() {
                       <BadgeAlert />
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold">27</div>
+                      <div className="text-2xl font-bold">{detections.length}</div>
                       <p className="text-xs text-muted-foreground">
-                        +1 since last month
+                        +{detections.filter(({ date }) => new Date(date) > subMonths(new Date(), 1)).length} since last month
                       </p>
                     </CardContent>
                   </Card>
@@ -158,8 +160,8 @@ export default function DashboardPage() {
                         There are 5 new alerts for this area
                       </CardDescription>
                     </CardHeader>
-                    <CardContent>
-                      <RecentAlerts />
+                    <CardContent className="max-h-[40vh] overflow-auto">
+                      <RecentAlerts alerts={detections} />
                     </CardContent>
                   </Card>
                 </div>

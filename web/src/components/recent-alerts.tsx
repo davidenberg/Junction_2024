@@ -2,13 +2,15 @@ import {
   Avatar,
   AvatarFallback,
 } from "@/components/ui/avatar";
+import { Detection } from '@/types';
 import { Axe, Trees } from 'lucide-react';
 
 interface ForestationProps {
   date: string;
-  increase: number;
+  x: string;
+  y: string;
 }
-function Forestation({ date, increase }: ForestationProps) {
+function NewDeforestation({ date, x, y }: ForestationProps) {
   return (<div className="flex items-center">
     <Avatar className="h-9 w-9">
       <AvatarFallback>
@@ -18,7 +20,7 @@ function Forestation({ date, increase }: ForestationProps) {
     <div className="ml-4 space-y-1">
       <p className="text-sm font-medium leading-none">Reforestation</p>
       <p className="text-sm text-muted-foreground">
-        The forestation area has increased by {increase}%
+        A new deforestation area has been detected at ({x}, {y}).
       </p>
     </div>
     <div className="ml-auto font-medium">{date}</div>
@@ -27,9 +29,11 @@ function Forestation({ date, increase }: ForestationProps) {
 
 interface DeforestationProps {
   date: string;
-  decrease: number;
+  increase: number;
+  x: string;
+  y: string;
 }
-function Deforestation({ date, decrease }: DeforestationProps) {
+function ExpandingDeforestation({ date, increase, x, y }: DeforestationProps) {
   return (
     <div className="flex items-center">
       <Avatar className="h-9 w-9">
@@ -40,7 +44,7 @@ function Deforestation({ date, decrease }: DeforestationProps) {
       <div className="ml-4 space-y-1">
         <p className="text-sm font-medium leading-none">Deforestation</p>
         <p className="text-sm text-muted-foreground">
-          The forestation area has decreased by {decrease}%
+          The deforestation area at ({x}, {y}) has increased by {increase} %pt.
         </p>
       </div>
       <div className="ml-auto font-medium">{date}</div>
@@ -48,14 +52,19 @@ function Deforestation({ date, decrease }: DeforestationProps) {
   );
 }
 
-export function RecentAlerts() {
+interface RecentAlertsProps {
+  alerts: Detection[];
+}
+export function RecentAlerts({ alerts }: RecentAlertsProps) {
   return (
     <div className="space-y-8">
-      <Deforestation date='08.11.2024' decrease={5.2} />
-      <Forestation date="02.09.2024" increase={1} />
-      <Deforestation date='07.07.2024' decrease={0.7} />
-      <Deforestation date='05.04.2024' decrease={1.3} />
-      <Forestation date='02.02.2024' increase={0.4} />
+      {alerts?.map((detection) => {
+        const date = detection.date.substring(0, 10);
+        if (detection.type === 'LS') {
+          return <NewDeforestation date={date} x={detection.x_cord} y={detection.y_cord} />;
+        }
+        return <ExpandingDeforestation date={date} increase={detection.area_change} x={detection.x_cord} y={detection.y_cord} />;
+      })}
     </div>
   );
 };
