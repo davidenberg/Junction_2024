@@ -1,7 +1,6 @@
 export type SatelliteImageData = {
   satellite: string;
   segmented: string;
-  forestationRate: number;
 };
 
 export type Detection =
@@ -18,3 +17,14 @@ export type Detection =
       y_cord: string;
       area_change: number;
     };
+
+export type TotalCoverage = {
+  total_coverage: string;
+};
+
+export type AreaCoverage = {
+  date: string;
+  coverage: string;
+};
+
+export type Statistics = [TotalCoverage, [], ...AreaCoverage[]];

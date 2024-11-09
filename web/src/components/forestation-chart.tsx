@@ -1,15 +1,16 @@
-import { SatelliteImageData } from '@/types';
+import { AreaCoverage, SatelliteImageData } from '@/types';
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 
 interface ForestationChartProps {
   data: {
     [key: string]: SatelliteImageData;
   };
+  coverage: AreaCoverage[];
 }
-export function ForestationChart({ data }: ForestationChartProps) {
+export function ForestationChart({ data, coverage }: ForestationChartProps) {
   const formattedData = Object.keys(data).map((key) => ({
     name: key,
-    total: data[key].forestationRate
+    total: Number(coverage.find((e) => e.date === key)?.coverage?.replace('%', ''))
   }));
   return (
     <ResponsiveContainer width="100%" height={350}>
@@ -20,13 +21,14 @@ export function ForestationChart({ data }: ForestationChartProps) {
           fontSize={12}
           tickLine={false}
           axisLine={false}
+          tickFormatter={(value) => value.substring(0, 10)}
         />
         <YAxis
           stroke="#888888"
           fontSize={12}
           tickLine={false}
           axisLine={false}
-          tickFormatter={(value) => `${value * 100}%`}
+          tickFormatter={(value) => `${value}%`}
         />
         <Bar
           dataKey="total"

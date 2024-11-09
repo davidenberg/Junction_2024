@@ -44,7 +44,7 @@ function ExpandingDeforestation({ date, increase, x, y }: DeforestationProps) {
       <div className="ml-4 space-y-1">
         <p className="text-sm font-medium leading-none">Expanding Deforestation Area</p>
         <p className="text-sm text-muted-foreground">
-          The deforestation area at ({x}, {y}) has increased by {increase} %pt.
+          The deforestation area at ({x}, {y}) has increased by {Number(increase).toFixed(2)} %pt.
         </p>
       </div>
       <div className="ml-auto font-medium">{date}</div>
