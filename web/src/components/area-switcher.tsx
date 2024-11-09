@@ -140,6 +140,7 @@ export default function AreaSwitcher({ className }: AreaSwitcherProps) {
                       setOpen(false);
                       setShowNewAreaDialog(true);
                     }}
+                    disabled
                   >
                     <PlusCircle className="h-5 w-5" />
                     Create Area

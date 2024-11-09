@@ -19,8 +19,29 @@ import { RecentAlerts } from "@/components/recent-alerts";
 import AreaSwitcher from "@/components/area-switcher";
 import { ThemeProvider } from './components/theme-provider';
 import { BadgeAlert, Satellite, Telescope, TreePine } from 'lucide-react';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from './components/ui/carousel';
+
+const AREA_IMAGES = {
+  'area-1': {
+    '2020-07-01': {
+      satellite: '2020-07-01-S2.jpg',
+      segmented: ''
+    },
+    '2022-04-01': {
+      satellite: '2022-04-01-S2.jpg',
+      segmented: ''
+    },
+    '2022-10-01': {
+      satellite: '2022-10-01-S2.jpg',
+      segmented: ''
+    }
+  }
+};
+
+const SELECTED_AREA = 'area-1';
 
 export default function DashboardPage() {
+  const ACTIVE_AREA_IMAGES = AREA_IMAGES[SELECTED_AREA];
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <main>
@@ -140,6 +161,28 @@ export default function DashboardPage() {
                       <RecentAlerts />
                     </CardContent>
                   </Card>
+                </div>
+              </TabsContent>
+              <TabsContent value="map" className="space-y-4">
+                <div className="flex justify-center ">
+                  <Carousel className="w-full max-w-[50vw]">
+                    <CarouselContent>
+                      {Object.keys(ACTIVE_AREA_IMAGES).map((key, index) => (
+                        <CarouselItem key={index}>
+                          <div className="p-1 pt-0">
+                            <Card>
+                              <CardTitle className='text-center mt-8'>{key}</CardTitle>
+                              <CardContent className="flex aspect-square items-center justify-center p-6 w-full h-full max-h-[70vh]">
+                                <img src={`${SELECTED_AREA}/${ACTIVE_AREA_IMAGES[key].satellite}`}></img>
+                              </CardContent>
+                            </Card>
+                          </div>
+                        </CarouselItem>
+                      ))}
+                    </CarouselContent>
+                    <CarouselPrevious />
+                    <CarouselNext />
+                  </Carousel>
                 </div>
               </TabsContent>
             </Tabs>
