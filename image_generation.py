@@ -4,8 +4,7 @@ function setup() {
   return {
     input: ["B02", "B03", "B04"],
     output: {
-      bands: 3,
-      sampleType: "AUTO", // default value - scales the output values from [0,1] to [0,255].
+      bands: 3
     },
   }
 }
@@ -55,7 +54,7 @@ request = {
         },
         "data": [
             {
-                "type": "sentinel-2-l1c",
+                "type": "sentinel-2-l2a",
                 "dataFilter": {
                     "timeRange": {
                         "from": "2023-09-01T00:00:00Z",
@@ -89,17 +88,17 @@ def get_image(i, bbox):
     image.save(f"images/training/negative/negative2_{i}.png")  
 
 def bbox_area():
-    START_LAT = -5.8
-    END_LAT = -6.5
-    START_LNG = -50.4
-    END_LNG = -49
-    JUMP_SIZE=0.01
+    START_LAT = -1.3
+    END_LAT = -17.3
+    START_LNG = -71
+    END_LNG = -58
+    JUMP_SIZE=0.1
 
     lat = START_LAT
     lng = START_LNG
-
     i = 0
     while lat > END_LAT:
+        lng = START_LNG
         while lng < END_LNG:
             get_image(i, [lng, lat, lng + JUMP_SIZE, lat + JUMP_SIZE])
             i += 1
@@ -107,11 +106,12 @@ def bbox_area():
         lat -= JUMP_SIZE
 
 
-bounding_boxes = [
-    [-63,-6.6,-62.5,-6],
-    # Add as many bounding boxes as needed to cover your area of interest
-]
+# bounding_boxes = [
+#     [-63,-6.6,-62.5,-6],
+#     # Add as many bounding boxes as needed to cover your area of interest
+# ]
 
-for i, bbox in enumerate(bounding_boxes):
-    get_image(i, bbox)
+# for i, bbox in enumerate(bounding_boxes):
+#     get_image(i, bbox)
 
+bbox_area()
