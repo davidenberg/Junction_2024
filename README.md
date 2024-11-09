@@ -11,7 +11,7 @@ pip install -r requirements.txt
 
 ## Demo
 
-A demo of our dashboard can be found at [link](https://blinkbonanza.06ebee69-0772-4b23-a839-3a48c3de5bf9.fi-hel2.upcloudobjects.com/index.html). The images used in creating the dashboard can be found in this repository in *satellite_images* and *satellite_images_area2*. The files in the *output* directory are created from the images in *satellite_images* 
+A demo of our dashboard can be found at [link](https://treetracker.coolify.codebite.fi/). The images used in creating the dashboard can be found in this repository in *satellite_images* and *satellite_images_area2*. The files in the *output* directory are created from the images in *satellite_images* 
 
 ## Usage
 
