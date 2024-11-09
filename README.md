@@ -55,4 +55,10 @@ Johannes Peltola (johannes.e.peltola@aalto.fi)
 
 ## License
 
-[MIT](https://choosealicense.com/licenses/mit/)
+[CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
+
+## Disclosure
+
+Part of the training data set was aquired from [Deforestation](https://www.kaggle.com/datasets/zafish/deforestation) by [DarieMoldovan](https://www.kaggle.com/zafish) and is licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
+
+The rest of the training / test data was acuired from [Copernicus](https://browser.dataspace.copernicus.eu)
