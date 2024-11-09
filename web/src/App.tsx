@@ -66,7 +66,7 @@ export default function DashboardPage() {
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <main>
-        <div className="hidden flex-col md:flex">
+        <div className="flex-col md:flex">
           <div className="border-b">
             <div className="flex h-16 items-center px-4">
               <AreaSwitcher onSelectedAreaChange={(area) => setSelectedArea(area)} />
