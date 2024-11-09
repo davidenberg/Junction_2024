@@ -12,6 +12,13 @@ export function ForestationChart({ data, coverage }: ForestationChartProps) {
     name: key,
     total: Number(coverage.find((e) => e.date === key)?.coverage?.replace('%', ''))
   }));
+
+  const minVal = Math.min.apply(null, formattedData.map((e) => e.total));
+  const yMin = minVal - 20;
+  const yTickCount = Math.floor((100 - yMin) / 5);
+  const yCount = Math.floor((100 - yMin) / yTickCount);
+  const yTicks = Array.from({ length: yTickCount }, (_, i) => 100 - (yCount - i - 1) * yTickCount);
+
   return (
     <ResponsiveContainer width="100%" height={350}>
       <BarChart data={formattedData}>
@@ -28,7 +35,9 @@ export function ForestationChart({ data, coverage }: ForestationChartProps) {
           fontSize={12}
           tickLine={false}
           axisLine={false}
-          tickFormatter={(value) => `${value}%`}
+          tickFormatter={(value) => `${Number(value).toFixed(0)}%`}
+          domain={[yMin, 100]}
+          ticks={yTicks}
         />
         <Bar
           dataKey="total"
