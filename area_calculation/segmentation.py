@@ -70,7 +70,7 @@ def calculate_chunk_deforestation(image):
   io.imsave(output_folder + "segmented_" + os.path.basename(image), output_image)
   
   # get white/black ratio  
-  pixel_ratio = get_pixel_ratio(output_folder + os.path.basename(image))
+  pixel_ratio = get_pixel_ratio(output_folder + "segmented_" + os.path.basename(image))
   deforestation_area_ha = round(pixel_ratio * total_image_area_ha)
 
   
