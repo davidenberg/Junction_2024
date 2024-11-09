@@ -1,56 +1,19 @@
+import { SatelliteImageData } from '@/types';
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 
-const data = [
-  {
-    name: "Jan",
-    total: 80,
-  },
-  {
-    name: "Feb",
-    total: 80 * 1.004,
-  },
-  {
-    name: "Mar",
-    total: 80 * 1.004,
-  },
-  {
-    name: "Apr",
-    total: 80 * 1.004 * (1 - 0.013),
-  },
-  {
-    name: "May",
-    total: 80 * 1.004 * (1 - 0.013),
-  },
-  {
-    name: "Jun",
-    total: 80 * 1.004 * (1 - 0.013),
-  },
-  {
-    name: "Jul",
-    total: 80 * 1.004 * (1 - 0.013) * (1 - 0.007),
-  },
-  {
-    name: "Aug",
-    total: 80 * 1.004 * (1 - 0.013) * (1 - 0.007),
-  },
-  {
-    name: "Sep",
-    total: 80 * 1.004 * (1 - 0.013) * (1 - 0.007) * 1.01,
-  },
-  {
-    name: "Oct",
-    total: 80 * 1.004 * (1 - 0.013) * (1 - 0.007) * 1.01,
-  },
-  {
-    name: "Nov",
-    total: 80 * 1.004 * (1 - 0.013) * (1 - 0.007) * 1.01 * (1 - 0.052),
-  },
-];
-
-export function ForestationChart() {
+interface ForestationChartProps {
+  data: {
+    [key: string]: SatelliteImageData;
+  };
+}
+export function ForestationChart({ data }: ForestationChartProps) {
+  const formattedData = Object.keys(data).map((key) => ({
+    name: key,
+    total: data[key].forestationRate
+  }));
   return (
     <ResponsiveContainer width="100%" height={350}>
-      <BarChart data={data}>
+      <BarChart data={formattedData}>
         <XAxis
           dataKey="name"
           stroke="#888888"
@@ -63,7 +26,7 @@ export function ForestationChart() {
           fontSize={12}
           tickLine={false}
           axisLine={false}
-          tickFormatter={(value) => `${value}%`}
+          tickFormatter={(value) => `${value * 100}%`}
         />
         <Bar
           dataKey="total"

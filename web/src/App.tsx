@@ -1,3 +1,4 @@
+import ReactCompareImage from 'react-compare-image';
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -20,28 +21,46 @@ import AreaSwitcher from "@/components/area-switcher";
 import { ThemeProvider } from './components/theme-provider';
 import { BadgeAlert, Satellite, Telescope, TreePine } from 'lucide-react';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from './components/ui/carousel';
+import { SatelliteImageData } from './types';
+import { formatDistanceToNow } from 'date-fns';
 
-const AREA_IMAGES = {
+const AREA_IMAGES: { [key: string]: ({ [key: string]: SatelliteImageData; }); } = {
   'area-1': {
     '2020-07-01': {
       satellite: '2020-07-01-S2.jpg',
-      segmented: ''
+      segmented: '2020-07-01-S2-segmented.jpg',
+      forestationRate: 0.95
     },
     '2022-04-01': {
       satellite: '2022-04-01-S2.jpg',
-      segmented: ''
+      segmented: '2022-04-01-S2-segmented.jpg',
+      forestationRate: 0.8,
     },
     '2022-10-01': {
       satellite: '2022-10-01-S2.jpg',
-      segmented: ''
+      segmented: '2022-10-01-S2-segmented.jpg',
+      forestationRate: 0.75,
     }
   }
 };
 
 const SELECTED_AREA = 'area-1';
 
+interface CarouselImageProps {
+  data: SatelliteImageData;
+}
+function CarouselImage({ data }: CarouselImageProps) {
+  const satelliteImageUrl = `${SELECTED_AREA}/${data.satellite}`;
+  const segmentedImageUrl = `${SELECTED_AREA}/${data.segmented}`;
+  return (
+    <ReactCompareImage leftImage={satelliteImageUrl} rightImage={segmentedImageUrl} sliderPositionPercentage={1} />
+  );
+}
+
 export default function DashboardPage() {
-  const ACTIVE_AREA_IMAGES = AREA_IMAGES[SELECTED_AREA];
+  const activeAreaImages = AREA_IMAGES[SELECTED_AREA];
+  const firstEntryKey = Object.keys(activeAreaImages).sort((a, b) => new Date(a).getTime() - new Date(b).getTime())[0];
+  console.log(firstEntryKey);
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <main>
@@ -59,7 +78,7 @@ export default function DashboardPage() {
               <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
               <div className="flex items-center space-x-2">
                 <CalendarDateRangePicker />
-                <Button>Update</Button>
+                <Button disabled>Update</Button>
               </div>
             </div>
             <Tabs defaultValue="overview" className="space-y-4">
@@ -105,7 +124,7 @@ export default function DashboardPage() {
                       <Telescope />
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold">257 days</div>
+                      <div className="text-2xl font-bold"> {formatDistanceToNow(new Date(firstEntryKey))}</div>
                       <p className="text-xs text-muted-foreground">
                       </p>
                     </CardContent>
@@ -131,7 +150,7 @@ export default function DashboardPage() {
                       <CardTitle>Forest Coverage</CardTitle>
                     </CardHeader>
                     <CardContent className="pl-2">
-                      <ForestationChart />
+                      <ForestationChart data={activeAreaImages} />
                     </CardContent>
                   </Card>
                   <Card className="col-span-3">
@@ -149,15 +168,15 @@ export default function DashboardPage() {
               </TabsContent>
               <TabsContent value="map" className="space-y-4">
                 <div className="flex justify-center ">
-                  <Carousel className="w-full max-w-[50vw]">
+                  <Carousel className="w-full max-w-[50vw]" draggable={false} opts={{ dragFree: true, watchDrag: false }}>
                     <CarouselContent>
-                      {Object.keys(ACTIVE_AREA_IMAGES).map((key, index) => (
+                      {Object.keys(activeAreaImages).map((key, index) => (
                         <CarouselItem key={index}>
                           <div className="p-1 pt-0">
                             <Card>
                               <CardTitle className='text-center mt-8'>{key}</CardTitle>
                               <CardContent className="flex aspect-square items-center justify-center p-6 w-full h-full max-h-[70vh]">
-                                <img src={`${SELECTED_AREA}/${ACTIVE_AREA_IMAGES[key].satellite}`}></img>
+                                <CarouselImage data={activeAreaImages[key]} />
                               </CardContent>
                             </Card>
                           </div>
