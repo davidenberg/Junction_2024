@@ -65,9 +65,9 @@ def calculate_chunk_deforestation(image):
   total_image_area_ha = 14807
   
   deforestation_information_df = pd.DataFrame(columns=["image", "deforestation_area_ha"])
-  output_folder = "output_images/"
+  output_folder = "../output/"
   output_image = otsu_thresholding(image)
-  io.imsave(output_folder + os.path.basename(image), output_image)
+  io.imsave(output_folder + "segmented_" + os.path.basename(image), output_image)
   
   # get white/black ratio  
   pixel_ratio = get_pixel_ratio(output_folder + os.path.basename(image))
@@ -86,7 +86,7 @@ if __name__ == "__main__":
   for filename in inputs:
       if filename.lower().endswith(('.png', '.jpg', '.jpeg', '.bmp', '.gif', '.tiff')):
           images.append(os.path.join("../image_generation/satellite_images", filename))
-  output_data_file = "statistics.txt"
+  output_data_file = "../output/statistics.txt"
   with open(output_data_file, 'w') as f:
     for image in images:
       deforestation_area_ha = calculate_chunk_deforestation(image)
