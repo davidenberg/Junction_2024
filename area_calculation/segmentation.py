@@ -71,6 +71,7 @@ def calculate_chunk_deforestation(image):
   
   # get white/black ratio  
   pixel_ratio = get_pixel_ratio(output_folder + "segmented_" + os.path.basename(image))
+
   deforestation_area_ha = round(pixel_ratio * total_image_area_ha)
 
   
@@ -88,13 +89,14 @@ if __name__ == "__main__":
           images.append(os.path.join("../image_generation/satellite_images", filename))
   output_data_file = "../output/statistics.txt"
   with open(output_data_file, 'w') as f:
+    f.write("Total area: " + str(14807) + "\n")
     for image in images:
       deforestation_area_ha = calculate_chunk_deforestation(image)
       #images with no deforestation cause a lot of noise, ignore them in statistic
       if deforestation_area_ha < 14807//2:
-        f.write(str(deforestation_area_ha) + "\n")
+        f.write(str(100 - (deforestation_area_ha/14807 * 100)) + "%" + "\n")
       else:
-        f.write("0\n")
+        f.write("100%\n")
      
     
     
